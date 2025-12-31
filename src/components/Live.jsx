@@ -15,6 +15,12 @@ const Live = () => {
 
     const items = [
         {
+            image: '/assets/live%20(1).png',
+            link: 'https://mentormettee.netlify.app/',
+            title: 'Student and Teacher online interation platform',
+            description: 'Built with MERN'
+        },
+        {
             image: '/assets/live%20(2).png',
             link: 'https://kittool.netlify.app/',
             title: 'Tool Market',
@@ -43,6 +49,12 @@ const Live = () => {
             image: '/assets/live%20(2).png',
             link: 'https://kittool.netlify.app/',
             title: 'Tool Market',
+            description: 'Built with MERN'
+        },
+        {
+            image: '/assets/live%20(1).png',
+            link: 'https://mentormettee.netlify.app/',
+            title: 'Student and Teacher online interation platform',
             description: 'Built with MERN'
         },
         {
