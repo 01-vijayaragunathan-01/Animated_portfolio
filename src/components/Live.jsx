@@ -16,7 +16,7 @@ const Live = () => {
     const items = [
          {
             image: '/assets/live%20(1).png',
-            link: 'https://mentormettee.netlify.app/',
+            link: 'https://mentor-metee.netlify.app/',
             title: 'social platform',
             description: 'Student and Teacher online interation platform Built with MERN'
         },
