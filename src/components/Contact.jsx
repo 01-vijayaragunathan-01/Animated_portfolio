@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import emailjs from '@emailjs/browser';
-import { SiGithub, SiInstagram, SiLinkedin, SiX } from 'react-icons/si';
-import { FiMail, FiUser, FiMessageSquare, FiSend, FiCheckCircle } from 'react-icons/fi';
+import { Link } from 'react-router-dom'; // Added for navigation
+import { FiMail, FiUser, FiMessageSquare, FiSend, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
+import { SiGithub, SiInstagram, SiLinkedin } from 'react-icons/si';
 import DecryptedText from '../animations/DecryptedText';
 import ElectricBorder from '../animations/Electric';
 import ShinyText from '../animations/ShinyText';
@@ -10,9 +11,6 @@ import PixelBlast from '../animations/PixelBlast';
 import Magnet from '../animations/Magnet';
 import LetterGlitch from '../animations/LetterGlitch'; 
 
-/**
- * TRUCK DELIVERY SVG
- */
 const DeliveryTruck = () => (
     <svg className="w-16 h-10" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 10H44V32H2V10Z" fill="#5227FF" />
@@ -27,24 +25,28 @@ const DeliveryTruck = () => (
 
 const Contact = () => {
     const [status, setStatus] = useState('idle'); 
+    const [isLowPower, setIsLowPower] = useState(false); // Performance optimization
     const form = useRef();
-    const[formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
         your_name: '',
         your_email: '',
         your_message: ''
     });
 
-    
+    // Detect Device Power
+    useEffect(() => {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) setIsLowPower(true);
+    }, []);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-   
     const sendEmail = (e) => {
         e.preventDefault();
         setStatus('sending');
 
-        // Start Truck Animation
         const tl = gsap.timeline();
         tl.to(".form-content", { opacity: 0, y: -20, duration: 0.4 });
         tl.fromTo(".delivery-track", { width: 0, opacity: 0 }, { width: "100%", opacity: 1, duration: 0.5 });
@@ -56,24 +58,33 @@ const Contact = () => {
             form.current,
             'Xu2g296K6DeR4kpon'    
         )
-
-            .then((result) => {
-                console.log('Success:', result.text);
-                setTimeout(() => setStatus('success'), 500);
-            }, (error) => {
-                console.log('Error:', error.text);
-                setStatus('error');
-                alert("Transmission failed. Please check your connection.");
-            });
+        .then(() => {
+            setTimeout(() => setStatus('success'), 500);
+        }, (error) => {
+            console.log('Error:', error.text);
+            setStatus('error');
+            alert("Transmission failed. Please check your connection.");
+        });
     };
 
     return (
-        <section className="relative w-full min-h-screen bg-[#060010] text-white overflow-hidden flex flex-col items-center justify-center py-20 px-4">
-
+        <section className="relative w-full min-h-screen bg-[#060010] text-white overflow-x-hidden flex flex-col items-center justify-center py-20 px-4">
             
+            {/* 1. CREATIVE NAVIGATION (HOME ARROW) - Desktop Only */}
+            <Link 
+                to="/" 
+                className="hidden md:flex fixed left-10 top-10 z-[100] items-center gap-4 text-white/40 hover:text-white transition-all group"
+            >
+                <div className="p-3 border border-white/10 rounded-full group-hover:border-[#5227FF] group-hover:bg-[#5227FF] transition-all">
+                    <FiArrowLeft className="text-2xl transition-transform group-hover:-translate-x-1" />
+                </div>
+                <span className="text-xs font-bold tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity uppercase">Home</span>
+            </Link>
+
+            {/* 2. BACKGROUND ANIMATION - Throttled for Mobile/iPad lag */}
             <div className="fixed inset-0 z-0 opacity-20 pointer-events-none">
                 <LetterGlitch
-                    glitchSpeed={50}
+                    glitchSpeed={isLowPower ? 100 : 50} // Slower speed on mobile to save CPU
                     centerVignette={true}
                     outerVignette={false}
                     smooth={true}
@@ -82,34 +93,34 @@ const Contact = () => {
 
             <div className="relative z-10 w-full max-w-5xl">
                 <div className="text-center mb-16 space-y-4">
+                    {/* Updated size to prevent overflow on iPhone screens */}
                     <DecryptedText
                         text="GET IN TOUCH"
-                        className="text-4xl md:text-9xl font-black tracking-tighter uppercase italic"
+                        className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase italic break-words"
                         animateOn="view"
                     />
                     <div className="flex items-center justify-center gap-2">
-                        <div className="h-[1px] w-12 bg-purple-500"></div>
-                        <p className="text-purple-400 font-mono text-xs tracking-[0.5em] uppercase">Secure Channel</p>
-                        <div className="h-[1px] w-12 bg-purple-500"></div>
+                        <div className="h-[1px] w-8 sm:w-12 bg-purple-500"></div>
+                        <p className="text-purple-400 font-mono text-[10px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] uppercase">Secure Channel</p>
+                        <div className="h-[1px] w-8 sm:w-12 bg-purple-500"></div>
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-16 items-start">
-
-                    
-                    <div className="space-y-12">
-                        <div className="space-y-8">
-                            <h3 className="text-xs font-bold text-white/40 tracking-[0.3em] uppercase">Connect With Me</h3>
-                            <div className="flex flex-wrap gap-6">
+                <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-start">
+                    {/* LEFT: INFO */}
+                    <div className="space-y-8 md:space-y-12">
+                        <div className="space-y-6 md:space-y-8">
+                            <h3 className="text-[10px] font-bold text-white/40 tracking-[0.3em] uppercase text-center lg:text-left">Connect With Me</h3>
+                            <div className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6">
                                 {[
                                     { Icon: SiGithub, color: '#fff', link: 'https://github.com/01-vijayaragunathan-01' },
                                     { Icon: SiLinkedin, color: '#0077B5', link: 'https://www.linkedin.com/in/vijayaragunathan01/' },
                                     { Icon: SiInstagram, color: '#fff', link: 'https://www.instagram.com/01_v_i_j_a_y_01/' },
                                     { Icon: FiMail, color: '#5227FF', link: 'mailto:ragunathanvijay68@gmail.com' }
                                 ].map((item, i) => (
-                                    <Magnet key={i}>
+                                    <Magnet key={i} disabled={isLowPower}>
                                         <a href={item.link} target="_blank" rel="noreferrer"
-                                            className="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-3xl hover:border-purple-500 hover:shadow-[0_0_20px_rgba(82,39,255,0.3)] transition-all duration-300">
+                                            className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-xl sm:text-2xl hover:border-purple-500 hover:shadow-[0_0_20px_rgba(82,39,255,0.3)] transition-all duration-300">
                                             <item.Icon style={{ color: item.color }} />
                                         </a>
                                     </Magnet>
@@ -117,28 +128,32 @@ const Contact = () => {
                             </div>
                         </div>
 
-                        <div className="p-8 border-l-2 border-purple-500 bg-purple-500/5 rounded-r-2xl">
-                            <p className="text-white/60 leading-relaxed">
-                                Currently open to <span className="text-white font-bold">Full-Stack Development</span> and <span className="text-white font-bold">Collabration</span>.
-                                Based in India, working globally.
+                        <div className="p-6 md:p-8 border-l-2 border-purple-500 bg-purple-500/5 rounded-r-2xl mx-auto lg:mx-0 max-w-sm sm:max-w-none">
+                            <p className="text-sm sm:text-base text-white/60 leading-relaxed">
+                                Currently open to <span className="text-white font-bold">Full-Stack Development</span> and <span className="text-white font-bold">Collaboration</span>.
+                                <br />Based in India, working globally.
                             </p>
                         </div>
                     </div>
 
                     {/* RIGHT: CONTACT FORM */}
-                    <div className="relative">
-                        <ElectricBorder color="#5227FF" thickness={2}>
-                            <div className="bg-black/60 backdrop-blur-3xl p-8 md:p-12 rounded-[2rem] border border-white/5 min-h-[500px] flex flex-col justify-center">
+                    <div className="relative w-full">
+                        <ElectricBorder 
+                            color="#5227FF" 
+                            thickness={isLowPower ? 1 : 2} 
+                            speed={isLowPower ? 0.5 : 1} // Throttle for lag
+                        >
+                            <div className="bg-black/60 backdrop-blur-3xl p-6 sm:p-8 md:p-12 rounded-[1.5rem] sm:rounded-[2rem] border border-white/5 min-h-[450px] flex flex-col justify-center">
 
                                 {status !== 'success' ? (
                                     <div className="relative">
-                                        <form ref={form} onSubmit={sendEmail} className="form-content space-y-6">
+                                        <form ref={form} onSubmit={sendEmail} className="form-content space-y-5 md:space-y-6">
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-bold text-purple-400 tracking-widest uppercase">Your Name</label>
                                                 <div className="relative">
                                                     <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
                                                     <input type="text" name="your_name" placeholder='Your Name' required value={formData.your_name} onChange={handleChange}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all" />
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl py-3 sm:py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all text-sm" />
                                                 </div>
                                             </div>
 
@@ -147,7 +162,7 @@ const Contact = () => {
                                                 <div className="relative">
                                                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
                                                     <input type="email" name="your_email" placeholder='Your email' required value={formData.your_email} onChange={handleChange}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all" />
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl py-3 sm:py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all text-sm" />
                                                 </div>
                                             </div>
 
@@ -155,18 +170,17 @@ const Contact = () => {
                                                 <label className="text-[10px] font-bold text-purple-400 tracking-widest uppercase">Message</label>
                                                 <div className="relative">
                                                     <FiMessageSquare className="absolute left-4 top-4 text-white/20" />
-                                                    <textarea name="your_message" rows="4" placeholder='Message...' required value={formData.message} onChange={handleChange}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all resize-none" />
+                                                    <textarea name="your_message" rows="4" placeholder='Message...' required value={formData.your_message} onChange={handleChange}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl py-3 sm:py-4 pl-12 pr-4 outline-none focus:border-purple-500 transition-all resize-none text-sm" />
                                                 </div>
                                             </div>
 
                                             <button type="submit" disabled={status === 'sending'}
-                                                className="w-full py-5 bg-[#5227FF] rounded-2xl font-black tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                                                className="w-full py-4 sm:py-5 bg-[#5227FF] rounded-xl sm:rounded-2xl font-black tracking-[0.2em] text-xs sm:text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                                                 {status === 'sending' ? "TRANSMITTING..." : <><ShinyText text="DISPATCH MESSAGE" /> <FiSend /></>}
                                             </button>
                                         </form>
 
-                                        {/* DELIVERY TRACK */}
                                         <div className="delivery-track absolute top-1/2 left-0 w-full h-[1px] bg-purple-500/30 opacity-0 pointer-events-none">
                                             <div className="truck-container absolute -top-8 left-0">
                                                 <DeliveryTruck />
@@ -174,16 +188,16 @@ const Contact = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-center space-y-8 py-10">
+                                    <div className="text-center space-y-6 md:space-y-8 py-6 md:py-10">
                                         <div className="relative inline-block">
-                                            <PixelBlast transparent={true} color="#5227FF" />
-                                            <FiCheckCircle className="text-8xl text-purple-500 relative z-10 mx-auto" />
+                                            {!isLowPower && <PixelBlast transparent={true} color="#5227FF" />}
+                                            <FiCheckCircle className="text-6xl sm:text-8xl text-purple-500 relative z-10 mx-auto" />
                                         </div>
                                         <div className="space-y-2">
-                                            <h2 className="text-4xl font-black italic tracking-tighter">PACKAGE DELIVERED</h2>
-                                            <p className="text-white/50 text-sm">Your message has reached the inbox successfully.</p>
+                                            <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter uppercase">Package Delivered</h2>
+                                            <p className="text-white/50 text-xs sm:text-sm">Transmission complete. Check back soon.</p>
                                         </div>
-                                        <button onClick={() => setStatus('idle')} className="text-purple-400 font-bold border-b border-purple-400 pb-1">SEND ANOTHER?</button>
+                                        <button onClick={() => setStatus('idle')} className="text-purple-400 text-xs sm:text-sm font-bold border-b border-purple-400 pb-1 uppercase tracking-widest">Send Another?</button>
                                     </div>
                                 )}
                             </div>

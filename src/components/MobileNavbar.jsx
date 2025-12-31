@@ -15,7 +15,7 @@ const MobileNavbar = () => {
 
     const menuItems = [
         { label: 'Home', path: '/' }, 
-        { label: 'Live Projects', path: '/live' },
+        { label: 'Live', path: '/live' },
         { label: 'Projects', path: '/projects' },
         { label: 'Contact', path: '/contact' }
     ];
