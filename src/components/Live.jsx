@@ -14,11 +14,11 @@ const Live = () => {
     }, []);
 
     const items = [
-        {
+         {
             image: '/assets/live%20(1).png',
             link: 'https://mentormettee.netlify.app/',
-            title: 'Student and Teacher online interation platform',
-            description: 'Built with MERN'
+            title: 'social platform',
+            description: 'Student and Teacher online interation platform Built with MERN'
         },
         {
             image: '/assets/live%20(2).png',
@@ -54,8 +54,8 @@ const Live = () => {
         {
             image: '/assets/live%20(1).png',
             link: 'https://mentormettee.netlify.app/',
-            title: 'Student and Teacher online interation platform',
-            description: 'Built with MERN'
+            title: 'social platform',
+            description: 'Student and Teacher online interation platform Built with MERN'
         },
         {
             image: '/assets/live%20(5).png',
